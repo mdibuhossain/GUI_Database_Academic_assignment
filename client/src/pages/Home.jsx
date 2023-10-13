@@ -1,9 +1,11 @@
 import axios from "axios";
 import { GrAddCircle } from "react-icons/gr";
+import { TiEdit, TiDelete } from "react-icons/ti";
 import { useState } from "react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import '../App.css';
 
 const Home = () => {
   const [tables, setTables] = useState([]);
@@ -32,7 +34,7 @@ const Home = () => {
 
   const loadTables = () => {
     axios.get("http://localhost:5000/alltables").then((data) => {
-      setTables(data?.data);
+      setTables(() => data?.data instanceof Array ? data?.data : []);
     });
   };
 
@@ -77,7 +79,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="w-[700px] mx-auto py-10 px-2 bg-white shadow-2xl shadow-red-600 mt-16 rounded-3xl">
+    <div className="w-[700px] mx-auto py-10 px-2 mb-12 bg-white shadow-2xl shadow-red-600 mt-16 rounded-3xl">
       <div className="flex gap-3 justify-center mb-10">
         <Link to="/newtable" className="btn btn-success">
           Create New Table
@@ -88,15 +90,14 @@ const Home = () => {
       </div>
       <div className="h-56 overflow-x-auto w-10/12 mx-auto">
         <div className="flex flex-col text-sm p-4 rounded-md bg-base-200">
-          {tables.map((t, idx) => (
+          {tables?.map((t, idx) => (
             <div
               key={idx}
               onClick={() => showTables(t)}
-              className={`flex flex-row justify-start btn  ${
-                selectedTable === t
-                  ? "bg-gray-300 no-animation cursor-default"
-                  : ""
-              }`}
+              className={`flex flex-row justify-start btn  ${selectedTable === t
+                ? "bg-gray-300 no-animation cursor-default"
+                : ""
+                }`}
             >
               <dir className="flex justify-center items-center gap-3">
                 <p>{t}</p>
@@ -116,6 +117,7 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Show table details */}
       <div className="overflow-x-auto w-10/12 mx-auto">
         <table className="table">
           <thead className="bg-cyan-300">
@@ -127,16 +129,25 @@ const Home = () => {
           </thead>
           <tbody>
             {data.map((item, idx) => (
-              <tr key={idx} className="hover">
+              <tr key={idx} className="parent_row hover relative">
                 {columns.map((col, _idx) => (
                   <td key={_idx}>{item[col?.Field]}</td>
                 ))}
+                <div className="child_row absolute right-2 top-1/2 -translate-y-1/2">
+                  <div className="flex gap-1">
+                    <i className="text-xl cursor-pointer hover:text-2xl duration-150"><TiEdit /></i>
+                    <i className="text-xl cursor-pointer hover:text-2xl duration-150"><TiDelete /></i>
+                  </div>
+                </div>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {/* END table details */}
 
+
+      {/* Insert new row Using Modal */}
       <dialog id="my_modal_1" className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Add new row</h3>
@@ -176,6 +187,8 @@ const Home = () => {
           </div>
         </div>
       </dialog>
+      {/* END Modal */}
+
     </div>
   );
 };
