@@ -135,8 +135,8 @@ const Home = () => {
                 ))}
                 <div className="child_row absolute right-2 top-1/2 -translate-y-1/2">
                   <div className="flex gap-1">
-                    <i className="text-xl cursor-pointer hover:text-2xl duration-150"><TiEdit /></i>
-                    <i className="text-xl cursor-pointer hover:text-2xl duration-150"><TiDelete /></i>
+                    <i className="text-xl cursor-pointer btn btn-sm btn-accent"><TiEdit /></i>
+                    <i className="text-xl cursor-pointer btn btn-sm btn-accent"><TiDelete /></i>
                   </div>
                 </div>
               </tr>
