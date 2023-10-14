@@ -17,7 +17,6 @@ const Home = () => {
   const showTables = (t_name) => {
     setSelectedTable(t_name);
     axios.get(`http://localhost:5000/table/${t_name}`).then((data) => {
-      console.log(data);
       setColumns(data?.data?.columns);
       setData(data?.data?.data);
       const tmpRowData = {};
@@ -33,6 +32,8 @@ const Home = () => {
   };
 
   const loadTables = () => {
+    setColumns([])
+    setData([])
     axios.get("http://localhost:5000/alltables").then((data) => {
       setTables(() => data?.data instanceof Array ? data?.data : []);
     });
@@ -43,13 +44,12 @@ const Home = () => {
     tmpData[e.target.name] = e.target.value;
     setNewRowData(tmpData);
   };
-  console.log(newRowData);
+
   const insertNewData = (e) => {
     e.preventDefault();
     axios
       .post(`http://localhost:5000/table/insert/${selectedTable}`, newRowData)
       .then((_) => {
-        console.log(_);
         if (_?.data?.protocol41) {
           toast.success(
             (t) => (
@@ -74,6 +74,11 @@ const Home = () => {
       });
   };
 
+  const deleteTable = (id) => {
+    axios.delete(`http://localhost:5000/table/delete/${id}`).then((_) => {
+    }).catch(er => { }).finally(() => loadTables())
+  }
+
   useEffect(() => {
     return () => loadTables();
   }, []);
@@ -94,15 +99,18 @@ const Home = () => {
             <div
               key={idx}
               onClick={() => showTables(t)}
-              className={`flex flex-row justify-start btn parent_row relative ${selectedTable === t
+              className={`flex flex-row justify-start btn relative ${selectedTable === t
                 ? "bg-gray-300 no-animation cursor-default"
                 : ""
                 }`}
             >
-              <div className="absolute right-2 top-1/2 -translate-y-1/2">
+              <div className={`absolute right-2 top-1/2 -translate-y-1/2 ${selectedTable === t
+                ? "" : "child_row"}`}>
                 <div className="flex gap-1">
                   <i className="text-xl cursor-pointer btn btn-sm btn-accent"><TiEdit /></i>
-                  <i className="text-xl cursor-pointer btn btn-sm btn-accent"><TiDelete /></i>
+                  <i className="text-xl cursor-pointer btn btn-sm btn-accent"
+                    onClick={() => deleteTable(t)}
+                  ><TiDelete /></i>
                 </div>
               </div>
               <dir className="flex justify-center items-center gap-3">
@@ -124,7 +132,7 @@ const Home = () => {
       </div>
 
       {/* Show table details */}
-      <div className="overflow-x-auto w-10/12 mx-auto">
+      {(data?.[0] && columns?.[0]) && <div className="overflow-x-auto w-10/12 mx-auto">
         <table className="table">
           <thead className="bg-cyan-300">
             <tr>
@@ -149,7 +157,7 @@ const Home = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </div>}
       {/* END table details */}
 
 

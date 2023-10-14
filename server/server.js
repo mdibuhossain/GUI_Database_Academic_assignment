@@ -57,6 +57,17 @@ app.post("/createtable/:name", (req, res) => {
   });
 });
 
+// delete table 
+app.delete("/table/delete/:id", (req, res) => {
+  const { id } = req.params;
+  let sql_q = `DROP TABLE ${id}`
+  console.log(id)
+  db.query(sql_q, (err, _data) => {
+    if (err) return res.json(err)
+    return res.json(_data)
+  })
+})
+
 // insert new data in the table
 app.post("/table/insert/:id", (req, res) => {
   const { id } = req.params;
