@@ -10,7 +10,7 @@ const CreateTable = () => {
     field_name: "",
     field_type: "int",
   });
-
+  console.log(colums)
   const addNewColumnHandler = () => {
     if (!tmpColumn.field_name) {
       alert("Field name required!");
@@ -24,8 +24,12 @@ const CreateTable = () => {
   };
 
   const deleteColumnHandler = (idx) => {
-    const newColumnList = colums.filter((_, _id) => idx !== _id);
-    setColums(newColumnList);
+    if (colums.indexOf(idx) === 0) {
+      setColums([]);
+    } else {
+      const newColumnList = colums.filter((_, _id) => idx !== _id);
+      setColums(newColumnList);
+    }
   };
 
   const newDataInputHandler = (e) => {
@@ -114,18 +118,12 @@ const CreateTable = () => {
                     />
                   </div>
                 </div>
-                <select
+                <input
                   disabled
-                  className="select select-bordered join-item w-[50%]"
+                  className="select select-bordered join-item w-[50%] "
+                  data-tip={item?.field_type}
                   value={item?.field_type}
-                >
-                  <option disabled>Data Type</option>
-                  <option>int</option>
-                  <option>int primary key auto_increment</option>
-                  <option>char</option>
-                  <option>char primary key</option>
-                  <option>varchar(200)</option>
-                </select>
+                />
                 <div className="indicator">
                   <button
                     onClick={() => deleteColumnHandler(idx)}
@@ -155,11 +153,20 @@ const CreateTable = () => {
                 value={tmpColumn["field_type"]}
               >
                 <option disabled>Data Type</option>
-                <option>int</option>
-                <option>int primary key auto_increment</option>
-                <option>char</option>
-                <option>char primary key</option>
-                <option>varchar(200)</option>
+                {
+                  colums.length > 0 ?
+                    <>
+                      <option>int</option>
+                      <option>char</option>
+                      <option>varchar(200)</option>
+                    </> : <>
+                      <option>int primary key</option>
+                      <option>int primary key auto_increment</option>
+                      <option>char primary key</option>
+                      <option>varchar(200) primary key</option>
+                    </>
+                }
+
               </select>
               <div className="indicator">
                 <button

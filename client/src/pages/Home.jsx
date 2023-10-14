@@ -94,11 +94,17 @@ const Home = () => {
             <div
               key={idx}
               onClick={() => showTables(t)}
-              className={`flex flex-row justify-start btn  ${selectedTable === t
+              className={`flex flex-row justify-start btn parent_row relative ${selectedTable === t
                 ? "bg-gray-300 no-animation cursor-default"
                 : ""
                 }`}
             >
+              <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                <div className="flex gap-1">
+                  <i className="text-xl cursor-pointer btn btn-sm btn-accent"><TiEdit /></i>
+                  <i className="text-xl cursor-pointer btn btn-sm btn-accent"><TiDelete /></i>
+                </div>
+              </div>
               <dir className="flex justify-center items-center gap-3">
                 <p>{t}</p>
                 {selectedTable === t && (
