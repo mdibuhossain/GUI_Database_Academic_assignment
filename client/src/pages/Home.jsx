@@ -1,6 +1,7 @@
 import axios from "axios";
 import { GrAddCircle } from "react-icons/gr";
 import { TiEdit, TiDelete } from "react-icons/ti";
+import { TbDatabaseOff, TbRefresh } from "react-icons/tb";
 import { useState } from "react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -32,8 +33,6 @@ const Home = () => {
   };
 
   const loadTables = () => {
-    setColumns([])
-    setData([])
     axios.get("http://localhost:5000/alltables").then((data) => {
       setTables(() => data?.data instanceof Array ? data?.data : []);
     });
@@ -74,9 +73,20 @@ const Home = () => {
       });
   };
 
-  const deleteTable = (id) => {
-    axios.delete(`http://localhost:5000/table/delete/${id}`).then((_) => {
-    }).catch(er => { }).finally(() => loadTables())
+  const deleteTable = (id, e) => {
+    e.stopPropagation();
+    if (window.confirm(`Are you sure want to delete the table: '${id}'`)) {
+      axios.delete(`http://localhost:5000/table/delete/${id}`).then((_) => {
+      }).catch(er => { }).finally(() => loadTables())
+    }
+  }
+  const deleteDataFromTable = (id, e) => {
+    e.stopPropagation();
+    console.log(e)
+    if (window.confirm(`Are you sure want to delete the table: '${id}'`)) {
+      axios.delete(`http://localhost:5000/table-data/delete/${id}`).then((_) => {
+      }).catch(er => { }).finally(() => showTables())
+    }
   }
 
   useEffect(() => {
@@ -107,9 +117,15 @@ const Home = () => {
               <div className={`absolute right-2 top-1/2 -translate-y-1/2 ${selectedTable === t
                 ? "" : "child_row"}`}>
                 <div className="flex gap-1">
+                  <i className="text-xl cursor-pointer btn btn-sm btn-accent"
+                    onClick={() => showTables(t)}
+                  ><TbRefresh /></i>
                   <i className="text-xl cursor-pointer btn btn-sm btn-accent"><TiEdit /></i>
                   <i className="text-xl cursor-pointer btn btn-sm btn-accent"
-                    onClick={() => deleteTable(t)}
+                    onClick={(e) => deleteDataFromTable(t, e)}
+                  ><TbDatabaseOff /></i>
+                  <i className="text-xl cursor-pointer btn btn-sm btn-accent"
+                    onClick={(e) => deleteTable(t, e)}
                   ><TiDelete /></i>
                 </div>
               </div>
@@ -132,19 +148,19 @@ const Home = () => {
       </div>
 
       {/* Show table details */}
-      {(data?.[0] && columns?.[0]) && <div className="overflow-x-auto w-10/12 mx-auto">
+      {(data?.length > 0 && columns?.length > 0) ? <div className="overflow-x-auto w-10/12 mx-auto">
         <table className="table">
           <thead className="bg-cyan-300">
             <tr>
-              {columns.map((col, idx) => (
+              {columns?.map((col, idx) => (
                 <th key={idx}>{col?.Field}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {data.map((item, idx) => (
+            {data?.map((item, idx) => (
               <tr key={idx} className="parent_row hover relative">
-                {columns.map((col, _idx) => (
+                {columns?.map((col, _idx) => (
                   <td key={_idx}>{item[col?.Field]}</td>
                 ))}
                 <div className="child_row absolute right-2 top-1/2 -translate-y-1/2">
@@ -157,7 +173,7 @@ const Home = () => {
             ))}
           </tbody>
         </table>
-      </div>}
+      </div> : null}
       {/* END table details */}
 
 
@@ -166,7 +182,7 @@ const Home = () => {
         <div className="modal-box">
           <h3 className="font-bold text-lg">Add new row</h3>
           <form className="py-4" onSubmit={insertNewData}>
-            {columns.map((col, idx) => (
+            {columns?.map((col, idx) => (
               <div key={idx}>
                 <label className="label">
                   <span className="label-text">Enter {col?.Field}</span>

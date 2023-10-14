@@ -68,6 +68,17 @@ app.delete("/table/delete/:id", (req, res) => {
   })
 })
 
+// Delete data from table
+app.delete("/table-data/delete/:id", (req, res) => {
+  const { id } = req.params;
+  let sql_q = `TRUNCATE TABLE ${id}`
+  console.log(id)
+  db.query(sql_q, (err, _data) => {
+    if (err) return res.json(err)
+    return res.json(_data)
+  })
+})
+
 // insert new data in the table
 app.post("/table/insert/:id", (req, res) => {
   const { id } = req.params;
