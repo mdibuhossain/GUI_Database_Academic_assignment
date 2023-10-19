@@ -120,7 +120,9 @@ const Home = () => {
                   <i className="text-xl cursor-pointer btn btn-sm btn-accent"
                     onClick={() => showTables(t)}
                   ><TbRefresh /></i>
-                  <i className="text-xl cursor-pointer btn btn-sm btn-accent"><TiEdit /></i>
+                  <i className="text-xl cursor-pointer btn btn-sm btn-accent"
+                    onClick={() => document.getElementById('edit_table_name').showModal()}
+                  ><TiEdit /></i>
                   <i className="text-xl cursor-pointer btn btn-sm btn-accent"
                     onClick={(e) => deleteDataFromTable(t, e)}
                   ><TbDatabaseOff /></i>
@@ -218,6 +220,23 @@ const Home = () => {
         </div>
       </dialog>
       {/* END Modal */}
+
+      {/* Table name rename modal */}
+      <dialog id="edit_table_name" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+          </form>
+          <h3 className="font-bold text-lg">Edit Table Name</h3>
+          <input
+            type="text"
+            placeholder="Table name"
+            defaultValue={selectedTable}
+            className="input input-bordered input-accent w-full max-w-xs"
+          />
+        </div>
+      </dialog>
+      {/* Modal END */}
 
     </div>
   );
