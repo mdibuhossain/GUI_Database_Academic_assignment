@@ -73,6 +73,41 @@ const Home = () => {
       });
   };
 
+  const updateTableName = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const new_table_name = e.target[0].value;
+    axios.put(`http://localhost:5000/table/update/${selectedTable}`, { data: new_table_name })
+      .then((_) => {
+        if (_?.data?.protocol41) {
+          const pre_table_idx = tables.indexOf(selectedTable);
+          let pre = [...tables]
+          pre[pre_table_idx] = new_table_name;
+          setTables(pre)
+          toast.success(
+            (t) => (
+              <p onClick={() => toast.dismiss(t.id)}>Successfully updated!</p>
+            ),
+            {
+              position: "bottom-center",
+              duration: 1000,
+            }
+          );
+        } else {
+          toast.error(
+            (t) => (
+              <p onClick={() => toast.dismiss(t.id)}>{_?.data?.sqlMessage}</p>
+            ),
+            {
+              position: "bottom-center",
+              duration: 1000,
+            }
+          );
+        }
+      })
+      .catch((err) => console.log(err))
+  }
+
   const deleteTable = (id, e) => {
     e.stopPropagation();
     if (window.confirm(`Are you sure want to delete the table: '${id}'`)) {
@@ -232,12 +267,19 @@ const Home = () => {
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
           </form>
           <h3 className="font-bold text-lg">Edit Table Name</h3>
-          <input
-            type="text"
-            placeholder="Table name"
-            defaultValue={selectedTable}
-            className="input input-bordered input-accent w-full max-w-xs"
-          />
+          <form onSubmit={updateTableName}>
+            <input
+              type="text"
+              placeholder="Table name"
+              defaultValue={selectedTable}
+              name="new_table_name"
+              className="input input-bordered input-accent w-full max-w-xs mt-3"
+            />
+            <div>
+              <button className="btn btn-success btn-sm mt-5">ADD</button>
+            </div>
+            <Toaster />
+          </form>
         </div>
       </dialog>
       {/* Modal END */}
