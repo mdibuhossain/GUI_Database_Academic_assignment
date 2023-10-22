@@ -56,7 +56,7 @@ const Home = () => {
             ),
             {
               position: "bottom-center",
-              duration: Infinity,
+              duration: 1000,
             }
           );
         } else {
@@ -66,7 +66,7 @@ const Home = () => {
             ),
             {
               position: "bottom-center",
-              duration: Infinity,
+              duration: 1000,
             }
           );
         }
@@ -83,7 +83,7 @@ const Home = () => {
   const deleteDataFromTable = (id, e) => {
     e.stopPropagation();
     console.log(e)
-    if (window.confirm(`Are you sure want to delete the table: '${id}'`)) {
+    if (window.confirm(`Are you sure want to delete all data from the table: '${id}'`)) {
       axios.delete(`http://localhost:5000/table-data/delete/${id}`).then((_) => {
       }).catch(er => { }).finally(() => showTables())
     }
@@ -117,16 +117,20 @@ const Home = () => {
               <div className={`absolute right-2 top-1/2 -translate-y-1/2 ${selectedTable === t
                 ? "" : "child_row"}`}>
                 <div className="flex gap-1">
-                  <i className="text-xl cursor-pointer btn btn-sm btn-accent"
+                  <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex"
+                    data-tip="refresh"
                     onClick={() => showTables(t)}
                   ><TbRefresh /></i>
-                  <i className="text-xl cursor-pointer btn btn-sm btn-accent"
+                  <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex"
+                    data-tip="edit"
                     onClick={() => document.getElementById('edit_table_name').showModal()}
                   ><TiEdit /></i>
-                  <i className="text-xl cursor-pointer btn btn-sm btn-accent"
+                  <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex"
+                    data-tip="delete data"
                     onClick={(e) => deleteDataFromTable(t, e)}
                   ><TbDatabaseOff /></i>
-                  <i className="text-xl cursor-pointer btn btn-sm btn-accent"
+                  <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex"
+                    data-tip="delete table"
                     onClick={(e) => deleteTable(t, e)}
                   ><TiDelete /></i>
                 </div>
@@ -167,8 +171,8 @@ const Home = () => {
                 ))}
                 <div className="child_row absolute right-2 top-1/2 -translate-y-1/2">
                   <div className="flex gap-1">
-                    <i className="text-xl cursor-pointer btn btn-sm btn-accent"><TiEdit /></i>
-                    <i className="text-xl cursor-pointer btn btn-sm btn-accent"><TiDelete /></i>
+                    <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="edit"><TiEdit /></i>
+                    <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="delete"><TiDelete /></i>
                   </div>
                 </div>
               </tr>
