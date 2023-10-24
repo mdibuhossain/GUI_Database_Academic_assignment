@@ -12,14 +12,14 @@ const Home = () => {
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState("");
   const [columns, setColumns] = useState([]);
-  const [data, setData] = useState([]);
+  const [rows, setRows] = useState([]);
   const [newRowData, setNewRowData] = useState({});
 
   const showTables = (t_name) => {
     setSelectedTable(t_name);
     axios.get(`http://localhost:5000/table/${t_name}`).then((data) => {
       setColumns(data?.data?.columns);
-      setData(data?.data?.data);
+      setRows(data?.data?.data);
       const tmpRowData = {};
       data?.data?.columns?.map((item) => {
         if (item?.Extra === "auto_increment") {
@@ -112,17 +112,49 @@ const Home = () => {
   const deleteTable = (id, e) => {
     e.stopPropagation();
     if (window.confirm(`Are you sure want to delete the table: '${id}'`)) {
-      axios.delete(`http://localhost:5000/table/delete/${id}`).then((_) => {
+      axios.delete(`http://localhost:5000/table/delete/all/${id}`).then((_) => {
       }).catch(er => { }).finally(() => loadTables())
     }
   }
-  const deleteDataFromTable = (id, e) => {
+  const deleteAllDataFromTable = (id, e) => {
     e.stopPropagation();
     console.log(e)
     if (window.confirm(`Are you sure want to delete all data from the table: '${id}'`)) {
       axios.delete(`http://localhost:5000/table-data/delete/${id}`).then((_) => {
       }).catch(er => { }).finally(() => showTables())
     }
+  }
+
+  const deleteRow = (item) => {
+    const pk = Object.keys(item)[0];
+    const pk_value = item[pk];
+    console.log(pk, pk_value);
+    console.log(rows);
+    axios.delete(`http://localhost:5000/table-data/delete/row`, { data: { key: pk, value: pk_value, table: selectedTable } }).then((_) => {
+      if (_?.data?.affectedRows > 0) {
+        const newRows = rows.filter(item => item[pk] !== pk_value);
+        setRows(newRows);
+        toast.success(
+          (t) => (
+            <p onClick={() => toast.dismiss(t.id)}>Successfully updated!</p>
+          ),
+          {
+            position: "bottom-center",
+            duration: 1000,
+          }
+        );
+      } else {
+        toast.error(
+          (t) => (
+            <p onClick={() => toast.dismiss(t.id)}>{_?.data?.sqlMessage}</p>
+          ),
+          {
+            position: "bottom-center",
+            duration: 1000,
+          }
+        );
+      }
+    }).catch(er => { })
   }
 
   useEffect(() => {
@@ -163,7 +195,7 @@ const Home = () => {
                   ><TiEdit /></i>
                   <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex"
                     data-tip="delete data"
-                    onClick={(e) => deleteDataFromTable(t, e)}
+                    onClick={(e) => deleteAllDataFromTable(t, e)}
                   ><TbDatabaseOff /></i>
                   <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex"
                     data-tip="delete table"
@@ -190,7 +222,7 @@ const Home = () => {
       </div>
 
       {/* Show table details */}
-      {(data?.length > 0 && columns?.length > 0) ? <div className="overflow-x-auto w-10/12 mx-auto">
+      {(rows?.length > 0 && columns?.length > 0) ? <div className="overflow-x-auto w-10/12 mx-auto">
         <table className="table">
           <thead className="bg-cyan-300">
             <tr>
@@ -200,7 +232,7 @@ const Home = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.map((item, idx) => (
+            {rows?.map((item, idx) => (
               <tr key={idx} className="parent_row hover relative">
                 {columns?.map((col, _idx) => (
                   <td key={_idx}>{item[col?.Field]}</td>
@@ -208,7 +240,9 @@ const Home = () => {
                 <div className="child_row absolute right-2 top-1/2 -translate-y-1/2">
                   <div className="flex gap-1">
                     <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="edit"><TiEdit /></i>
-                    <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="delete"><TiDelete /></i>
+                    <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="delete"
+                      onClick={() => deleteRow(item)}
+                    ><TiDelete /></i>
                   </div>
                 </div>
               </tr>
@@ -285,6 +319,7 @@ const Home = () => {
       </dialog>
       {/* Modal END */}
 
+      <Toaster />
     </div>
   );
 };
