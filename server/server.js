@@ -102,7 +102,7 @@ app.post("/table/insert/:id", (req, res) => {
 app.put("/table/update/:id", (req, res) => {
   const { id } = req.params;
   const attr = req.body;
-  let sql_q = `alter table ${id} rename to ${attr.data}`;
+  let sql_q = `alter table \`${id}\` rename to \`${attr.data}\``;
   db.query(sql_q, (err, _data) => {
     if (err) return res.json(err);
     return res.json(_data)

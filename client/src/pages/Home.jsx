@@ -79,6 +79,7 @@ const Home = () => {
     const new_table_name = e.target[0].value;
     axios.put(`http://localhost:5000/table/update/${selectedTable}`, { data: new_table_name })
       .then((_) => {
+        console.log(_)
         if (_?.data?.protocol41) {
           const pre_table_idx = tables.indexOf(selectedTable);
           let pre = [...tables]
@@ -138,7 +139,7 @@ const Home = () => {
           Refresh tables
         </button>
       </div>
-      <div className="h-56 overflow-x-auto w-10/12 mx-auto">
+      <div className="h-56 w-10/12 mx-auto">
         <div className="flex flex-col text-sm p-4 rounded-md bg-base-200">
           {tables?.map((t, idx) => (
             <div
