@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
 // get single table data
 app.get("/table/:id", (req, res) => {
   const { id } = req.params;
-  const sq = `describe ${id};SELECT * FROM ${id};`;
+  const sq = `describe \`${id}\`;SELECT * FROM \`${id}\`;`;
   db.query(sq, (err, data) => {
     if (err) return res.json(err);
     return res.json({
@@ -44,7 +44,7 @@ app.post("/createtable/:name", (req, res) => {
   const attr = req.body;
   if (attr.length == 0) throw new Error("Not valid");
   const innerString = [];
-  let sql_q = `CREATE TABLE ${name}(`;
+  let sql_q = `CREATE TABLE \`${name}\`(`;
   attr.map((item) => {
     const tmp = item.field_name + " " + item.field_type;
     innerString.push(tmp);
@@ -57,10 +57,11 @@ app.post("/createtable/:name", (req, res) => {
   });
 });
 
-// delete table 
+// delete table
 app.delete("/table/delete/:id", (req, res) => {
   const { id } = req.params;
-  let sql_q = `DROP TABLE ${id}`
+  let sql_q = `DROP TABLE \`${id}\``
+  console.log(id, sql_q);
   db.query(sql_q, (err, _data) => {
     if (err) return res.json(err)
     return res.json(_data)
@@ -70,7 +71,7 @@ app.delete("/table/delete/:id", (req, res) => {
 // Delete all data from table
 app.delete("/table-data/delete/all/:id", (req, res) => {
   const { id } = req.params;
-  let sql_q = `TRUNCATE TABLE ${id}`
+  let sql_q = `TRUNCATE TABLE \`${id}\``
   db.query(sql_q, (err, _data) => {
     if (err) return res.json(err)
     return res.json(_data)
@@ -80,7 +81,7 @@ app.delete("/table-data/delete/all/:id", (req, res) => {
 // Delete single row from table
 app.delete("/table-data/delete/row", (req, res) => {
   const data = req.body;
-  let sql_q = `DELETE FROM ${data.table} WHERE ${data.key}='${data.value}'`
+  let sql_q = `DELETE FROM \`${data.table}\` WHERE ${data.key}='${data.value}'`
   db.query(sql_q, (err, _data) => {
     if (err) return res.json(err)
     return res.json(_data)
@@ -92,7 +93,7 @@ app.post("/table/insert/:id", (req, res) => {
   const { id } = req.params;
   const attr = req.body;
   if (attr.length == 0) throw new Error("Not valid");
-  let sql_q = `INSERT INTO ${id}(`;
+  let sql_q = `INSERT INTO \`${id}\`(`;
   sql_q = sql_q + Object.keys(attr).join(",") + ") values(";
   sql_q =
     sql_q +

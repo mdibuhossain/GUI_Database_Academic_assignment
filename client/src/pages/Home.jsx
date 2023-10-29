@@ -112,7 +112,7 @@ const Home = () => {
   const deleteTable = (id, e) => {
     e.stopPropagation();
     if (window.confirm(`Are you sure want to delete the table: '${id}'`)) {
-      axios.delete(`http://localhost:5000/table/delete/all/${id}`).then((_) => {
+      axios.delete(`http://localhost:5000/table/delete/${id}`).then((_) => {
       }).catch(er => { }).finally(() => loadTables())
     }
   }
@@ -120,7 +120,7 @@ const Home = () => {
     e.stopPropagation();
     console.log(e)
     if (window.confirm(`Are you sure want to delete all data from the table: '${id}'`)) {
-      axios.delete(`http://localhost:5000/table-data/delete/${id}`).then((_) => {
+      axios.delete(`http://localhost:5000/table-data/delete/all/${id}`).then((_) => {
       }).catch(er => { }).finally(() => showTables())
     }
   }
