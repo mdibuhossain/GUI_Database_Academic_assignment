@@ -171,7 +171,7 @@ const Home = () => {
           Refresh tables
         </button>
       </div>
-      <div className="h-56 w-10/12 mx-auto">
+      <div className="overflow-y-scroll overflow-x-hidden h-56 w-10/12 mx-auto">
         <div className="flex flex-col text-sm p-4 rounded-md bg-base-200">
           {tables?.map((t, idx) => (
             <div
