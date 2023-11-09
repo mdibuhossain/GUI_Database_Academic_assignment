@@ -171,7 +171,7 @@ const Home = () => {
           Refresh tables
         </button>
       </div>
-      <div className="overflow-y-scroll overflow-x-hidden h-56 w-10/12 mx-auto">
+      <div className="overflow-y-auto overflow-x-hidden h-56 w-10/12 mx-auto">
         <div className="flex flex-col text-sm p-4 rounded-md bg-base-200">
           {tables?.map((t, idx) => (
             <div
@@ -239,7 +239,7 @@ const Home = () => {
                 ))}
                 <div className="child_row absolute right-2 top-1/2 -translate-y-1/2">
                   <div className="flex gap-1">
-                    <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="edit"><TiEdit /></i>
+                    {/* <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="edit"><TiEdit /></i> */}
                     <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="delete"
                       onClick={() => deleteRow(item)}
                     ><TiDelete /></i>
