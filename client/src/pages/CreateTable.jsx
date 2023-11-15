@@ -91,7 +91,7 @@ const CreateTable = () => {
       <h1 className="text-center text-3xl mt-10 mb-5 font-bold uppercase">
         Table creation
       </h1>
-      <p className="text-center"><i>Note: every table must have primary key.</i></p>
+      <p className="text-center"><i>Note: every table must have a primary key.</i></p>
       <div className="sm:w-[500px] w-11/12 overflow-hidden bg-gradient-to-r from-green-50 to-blue-50  rounded-3xl shadow-2xl p-10 mx-auto">
         <form onSubmit={submitHandler}>
           <div className="flex flex-col gap-3">

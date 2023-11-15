@@ -13,6 +13,7 @@ const Home = () => {
   const [selectedTable, setSelectedTable] = useState("");
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
+  const [selectedRowIdx, setSelectedRowIdx] = useState(0);
   const [newRowData, setNewRowData] = useState({});
 
   // show table when cliked on the 
@@ -215,7 +216,7 @@ const Home = () => {
                   <button
                     className=" bg-zinc-400 p-2 rounded-full hover:p-3 transition-all"
                     onClick={() =>
-                      document.getElementById("my_modal_1").showModal()
+                      document.getElementById("insert_row_modal").showModal()
                     }
                   >
                     <GrAddCircle />
@@ -245,7 +246,9 @@ const Home = () => {
                 ))}
                 <div className="child_row absolute right-2 top-1/2 -translate-y-1/2">
                   <div className="flex gap-1">
-                    <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="edit"><TiEdit /></i>
+                    <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="edit"
+                      onClick={() => { document.getElementById("update_row_modal").showModal(); setSelectedRowIdx(idx) }}
+                    ><TiEdit /></i>
                     <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="delete"
                       onClick={() => deleteRow(item)}
                     ><TiDelete /></i>
@@ -260,7 +263,7 @@ const Home = () => {
 
 
       {/* Insert new row Using Modal */}
-      <dialog id="my_modal_1" className="modal">
+      <dialog id="insert_row_modal" className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Add new row</h3>
           <form className="py-4" onSubmit={insertNewData}>
@@ -324,6 +327,51 @@ const Home = () => {
         </div>
       </dialog>
       {/* Modal END */}
+
+
+      {/* update single row Using Modal */}
+      <dialog id="update_row_modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Update row</h3>
+          <form className="py-4" onSubmit={insertNewData}>
+            {columns?.map((col, idx) => (
+              <div key={idx}>
+                <label className="label">
+                  <span className="label-text">Enter {col?.Field}</span>
+                </label>
+                <input
+                  type={col?.Type?.includes("int") ? "number" : "text"}
+                  placeholder={`Enter ${col?.Field}`}
+                  name={col?.Field}
+                  value={rows[selectedRowIdx]?.[col.Field]}
+                  onChange={onChangeDataHandler}
+                  disabled={col?.Extra === "auto_increment"}
+                  required={col?.Null === "NO"}
+                  className="input input-bordered w-full max-w-xs input-sm"
+                />
+              </div>
+            ))}
+            <button className="btn btn-success btn-sm mt-5">UPDATE</button>
+            <Toaster />
+          </form>
+          <div className="modal-action">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button
+                className="btn"
+                onClick={() => {
+                  setNewRowData({});
+                }}
+              >
+                Close
+              </button>
+            </form>
+          </div>
+        </div>
+      </dialog>
+      {/* END Modal */}
+
+
 
       <Toaster />
     </div>
