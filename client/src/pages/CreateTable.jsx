@@ -8,13 +8,14 @@ const CreateTable = () => {
   const [tableName, setTableName] = useState("");
   const [tmpColumn, setTmpColumn] = useState({
     field_name: "",
-    field_type: "int",
+    field_type: "int primary key",
   });
   console.log(colums)
   const addNewColumnHandler = () => {
     if (!tmpColumn.field_name) {
       alert("Field name required!");
     } else {
+      tmpColumn.field_type = document.getElementById("column_type").value;
       const check = colums.find(
         (col) => col.field_name === tmpColumn.field_name
       );
@@ -24,7 +25,7 @@ const CreateTable = () => {
   };
 
   const deleteColumnHandler = (idx) => {
-    if (colums.indexOf(idx) === 0) {
+    if (idx === 0) {
       setColums([]);
     } else {
       const newColumnList = colums.filter((_, _id) => idx !== _id);
@@ -90,6 +91,7 @@ const CreateTable = () => {
       <h1 className="text-center text-3xl mt-10 mb-5 font-bold uppercase">
         Table creation
       </h1>
+      <p className="text-center"><i>Note: every table must have primary key.</i></p>
       <div className="sm:w-[500px] w-11/12 overflow-hidden bg-gradient-to-r from-green-50 to-blue-50  rounded-3xl shadow-2xl p-10 mx-auto">
         <form onSubmit={submitHandler}>
           <div className="flex flex-col gap-3">
@@ -106,6 +108,7 @@ const CreateTable = () => {
                 />
               </label>
             </div>
+            {/* Row declared */}
             {colums.map((item, idx) => (
               <div key={idx} className="join">
                 <div>
@@ -150,7 +153,7 @@ const CreateTable = () => {
                 onChange={newDataInputHandler}
                 className="select select-bordered join-item w-[50%]"
                 name="field_type"
-                value={tmpColumn["field_type"]}
+                id="column_type"
               >
                 <option disabled>Data Type</option>
                 {
