@@ -15,6 +15,7 @@ const Home = () => {
   const [rows, setRows] = useState([]);
   const [newRowData, setNewRowData] = useState({});
 
+  // show table when cliked on the 
   const showTables = (t_name) => {
     setSelectedTable(t_name);
     axios.get(`http://localhost:5000/table/${t_name}`).then((data) => {
@@ -32,6 +33,7 @@ const Home = () => {
     });
   };
 
+  // fetch all tables from database
   const loadTables = () => {
     axios.get("http://localhost:5000/alltables").then((data) => {
       setTables(() => data?.data instanceof Array ? data?.data : []);
@@ -44,6 +46,7 @@ const Home = () => {
     setNewRowData(tmpData);
   };
 
+  // insert new row into the table
   const insertNewData = (e) => {
     e.preventDefault();
     axios
@@ -73,17 +76,18 @@ const Home = () => {
       });
   };
 
+  // Update table name
   const updateTableName = (e) => {
     e.preventDefault();
     e.stopPropagation();
     const new_table_name = e.target[0].value;
     axios.put(`http://localhost:5000/table/update/${selectedTable}`, { data: new_table_name })
       .then((_) => {
-        console.log(_)
         if (_?.data?.protocol41) {
           const pre_table_idx = tables.indexOf(selectedTable);
           let pre = [...tables]
           pre[pre_table_idx] = new_table_name;
+          setSelectedTable(new_table_name)
           setTables(pre)
           toast.success(
             (t) => (
@@ -107,8 +111,10 @@ const Home = () => {
         }
       })
       .catch((err) => console.log(err))
+      .finally(() => e.target.reset())
   }
 
+  // Delete entire table from database
   const deleteTable = (id, e) => {
     e.stopPropagation();
     if (window.confirm(`Are you sure want to delete the table: '${id}'`)) {
@@ -116,20 +122,20 @@ const Home = () => {
       }).catch(er => { }).finally(() => loadTables())
     }
   }
+
+  // Delete all data or rows from a table
   const deleteAllDataFromTable = (id, e) => {
     e.stopPropagation();
-    console.log(e)
     if (window.confirm(`Are you sure want to delete all data from the table: '${id}'`)) {
       axios.delete(`http://localhost:5000/table-data/delete/all/${id}`).then((_) => {
       }).catch(er => { }).finally(() => showTables())
     }
   }
 
+  // delete a single row or data from a table
   const deleteRow = (item) => {
     const pk = Object.keys(item)[0];
     const pk_value = item[pk];
-    console.log(pk, pk_value);
-    console.log(rows);
     axios.delete(`http://localhost:5000/table-data/delete/row`, { data: { key: pk, value: pk_value, table: selectedTable } }).then((_) => {
       if (_?.data?.affectedRows > 0) {
         const newRows = rows.filter(item => item[pk] !== pk_value);
@@ -239,7 +245,7 @@ const Home = () => {
                 ))}
                 <div className="child_row absolute right-2 top-1/2 -translate-y-1/2">
                   <div className="flex gap-1">
-                    {/* <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="edit"><TiEdit /></i> */}
+                    <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="edit"><TiEdit /></i>
                     <i className="text-xl cursor-pointer btn btn-sm btn-accent tooltip flex" data-tip="delete"
                       onClick={() => deleteRow(item)}
                     ><TiDelete /></i>
